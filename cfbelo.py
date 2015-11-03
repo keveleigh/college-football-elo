@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 
 """
-This scrapes college football team information and calculates an all-time ELO.
+This scrapes college football team information and calculates an all-time Elo.
 
-In order to use this, you will need to download bs4, pygraph, pygraphviz, and graphviz.
+In order to use this, you will need to download bs4 and lxml.
 
-Team dictionary format: {Team Name: [ESPN ID, FBS/FCS, Wins, Losses, ImageURL, {Opponent1: Outcome1, Opponent2: Outcome2, ... , OpponentN: OutcomeN}, [Opponent1, Outcome1], [Opponent2, Outcome2], ... , [OpponentN, OutcomeN]]}
-ID dictionary format: {ESPN ID: Team Name}
+Game dictionary format: {date1: {[game1team1, game1team1score, game1team2, game1team2score], ... , [gameNteam1, gameNteam1score, gameNteam2, gameNteam2score]}, date2: ... }
 
-Command format: python graphs.py reuse year school division
+Command format: python cfbelo.py reuse
 """
 
 import urllib.request
@@ -23,71 +22,6 @@ from bs4 import BeautifulSoup
 
 allSchools = set()
 allGames = {}
-
-powerFive = ['Boston College',
-             'Clemson',
-             'Duke',
-             'Florida State',
-             'Georgia Tech',
-             'Louisville',
-             'Miami (FL)',
-             'North Carolina',
-             'North Carolina State',
-             'Pittsburgh',
-             'Syracuse',
-             'Virginia',
-             'Virginia Tech',
-             'Wake Forest',
-             'Baylor',
-             'Iowa State',
-             'Kansas',
-             'Kansas State',
-             'Oklahoma',
-             'Oklahoma State',
-             'TCU',
-             'Texas',
-             'Texas Tech',
-             'West Virginia',
-             'Illinois',
-             'Indiana',
-             'Iowa',
-             'Maryland',
-             'Michigan',
-             'Michigan State',
-             'Minnesota',
-             'Nebraska',
-             'Northwestern',
-             'Ohio State',
-             'Penn State',
-             'Purdue',
-             'Rutgers',
-             'Wisconsin',
-             'Arizona',
-             'Arizona State',
-             'California',
-             'Colorado',
-             'Oregon',
-             'Oregon State',
-             'Stanford',
-             'UCLA',
-             'USC',
-             'Utah',
-             'Washington',
-             'Washington State',
-             'Alabama',
-             'Arkansas',
-             'Auburn',
-             'Florida',
-             'Georgia',
-             'Kentucky',
-             'LSU',
-             'Mississippi State',
-             'Missouri',
-             'Ole Miss',
-             'South Carolina',
-             'Tennessee',
-             'Texas A&M',
-             'Vanderbilt']
              
 def get_games(school, schedule_link):
     global allGames
@@ -97,7 +31,7 @@ def get_games(school, schedule_link):
     html = fix_html(html)
     
     soup = BeautifulSoup(html, 'lxml')
-    games = soup.findAll("td", {"height" : "18"})
+    games = soup.findAll('td', {'height' : '18'})
     
     print(school)
     
@@ -190,7 +124,7 @@ def main():
         print('There isn\'t any cached data. Please scrape first.')
         return
     else: 
-        get_schools();
+        get_schools()
             
         f = open('allSchools.txt', 'w')
         f.write(str(allSchools))
@@ -199,11 +133,6 @@ def main():
         f = open('allGames.txt', 'w')
         f.write(str(allGames))
         f.close()
-
-##    allScores = allScores.items()
-##    allScores.sort(key=lambda x: float(x[1]))
-##    for n,s in allScores:
-##        print n + ': ' + str(s)
 
 if __name__ == '__main__':
     import time
