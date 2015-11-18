@@ -88,7 +88,7 @@ def get_schools():
     html = url.read().decode('windows-1252')
     html = fix_html(html)
             
-    soup = BeautifulSoup(html, 'lxml')  
+    soup = BeautifulSoup(html, 'lxml')
     school_links = soup.find_all(href=re.compile('active/'))
     
     for school in school_links[:len(school_links)//2]:
